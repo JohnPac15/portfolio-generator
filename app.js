@@ -1,67 +1,105 @@
 const inquirer = require('inquirer');
-// const fs = require('fs')
+const fs = require('fs')
 
-// const generatePage = require('./src/page-template.js')
+const generatePage = require('./src/page-template.js')
 
-// const pageHtml = generatePage(Name, github)
-
-// fs.writeFile('./index.html' , pageHtml, err => {
-//     if(err) throw (err);
-
-//     console.log('Portfolio complete! Check out index.html to see the output!')
-// })
+const mockData = {
+    name: 'Lernantino',
+    github: 'lernantino',
+    confirmAbout: true,
+    about:
+      'Duis consectetur nunc nunc. Morbi finibus non sapien nec pharetra. Fusce nec dignissim orci, ac interdum ipsum. Morbi mattis justo sed commodo pellentesque. Nulla eget fringilla nulla. Integer gravida magna mi, id efficitur metus tempus et.',
+    projects: [
+      {
+        name: 'Run Buddy',
+        description:
+          'Duis consectetur nunc nunc. Morbi finibus non sapien nec pharetra. Fusce nec dignissim orci, ac interdum ipsum. Morbi mattis justo sed commodo pellentesque. Nulla eget fringilla nulla. Integer gravida magna mi, id efficitur metus tempus et. Nam fringilla elit dapibus pellentesque cursus.',
+        languages: ['HTML', 'CSS'],
+        link: 'https://github.com/lernantino/run-buddy',
+        feature: true,
+        confirmAddProject: true
+      },
+      {
+        name: 'Taskinator',
+        description:
+          'Duis consectetur nunc nunc. Morbi finibus non sapien nec pharetra. Fusce nec dignissim orci, ac interdum ipsum. Morbi mattis justo sed commodo pellentesque. Nulla eget fringilla nulla. Integer gravida magna mi, id efficitur metus tempus et. Nam fringilla elit dapibus pellentesque cursus.',
+        languages: ['JavaScript', 'HTML', 'CSS'],
+        link: 'https://github.com/lernantino/taskinator',
+        feature: true,
+        confirmAddProject: true
+      },
+      {
+        name: 'Taskmaster Pro',
+        description:
+          'Duis consectetur nunc nunc. Morbi finibus non sapien nec pharetra. Fusce nec dignissim orci, ac interdum ipsum. Morbi mattis justo sed commodo pellentesque. Nulla eget fringilla nulla. Integer gravida magna mi, id efficitur metus tempus et. Nam fringilla elit dapibus pellentesque cursus.',
+        languages: ['JavaScript', 'jQuery', 'CSS', 'HTML', 'Bootstrap'],
+        link: 'https://github.com/lernantino/taskmaster-pro',
+        feature: false,
+        confirmAddProject: true
+      },
+      {
+        name: 'Robot Gladiators',
+        description:
+          'Duis consectetur nunc nunc. Morbi finibus non sapien nec pharetra. Fusce nec dignissim orci, ac interdum ipsum. Morbi mattis justo sed commodo pellentesque.',
+        languages: ['JavaScript'],
+        link: 'https://github.com/lernantino/robot-gladiators',
+        feature: false,
+        confirmAddProject: false
+      }
+    ]
+  };
 
 const promptUser = () => {
     return inquirer.prompt([
-      {
-        type: 'input',
-        name: 'name',
-        message: 'What is your name? (Required)',
-        validate: nameInput => {
-            if(nameInput){
-                return true
+        {
+            type: 'input',
+            name: 'name',
+            message: 'What is your name? (Required)',
+            validate: nameInput => {
+                if(nameInput){
+                    return true
+                }
+                else {
+                    console.log("please enter your name")
+                    return false
+                }
             }
-            else {
-                console.log("please enter your name")
-                return false
+        },
+        {
+            type: 'input',
+            name: 'github',
+            message: 'Enter your GitHub Username? (Required)',
+            validate: nameInput => {
+                if(nameInput){
+                    return true
+                }
+                else {
+                    console.log("please enter your Github username")
+                    return false
+                }
             }
+        },
+        {
+            type: 'confirm',
+            name: 'confirmAbout',
+            message: 'Would you like to enter some information about yourself for an "About" section?',
+            default: true
+        },
+        {
+            type: 'input',
+            name: 'about',
+            message: 'Provide some information about yourself:',
+            when: ( {confirmAbout} ) => {
+                if (confirmAbout) {
+                    return true 
+                }
+                else {
+                    return false
+                }
+            }
+            
         }
-      },
-      {
-        type: 'input',
-        name: 'github',
-        message: 'Enter your GitHub Username? (Required)',
-        validate: nameInput => {
-            if(nameInput){
-                return true
-            }
-            else {
-                console.log("please enter your Github username")
-                return false
-            }
-        }
-      },
-      {
-          type: 'confirm',
-          name: 'confirmAbout',
-          message: 'Would you like to enter some information about yourself for an "About" section?',
-          default: true
-      },
-      {
-        type: 'input',
-        name: 'about',
-        message: 'Provide some information about yourself:',
-        when: ( {confirmAbout} ) => {
-            if (confirmAbout) {
-                return true 
-            }
-            else {
-                return false
-            }
-        }
-        
-    }
-]);
+    ]);
 };
 
 const promptProject = portfolioData => {
@@ -153,7 +191,15 @@ const promptProject = portfolioData => {
 
 
 promptUser()
-    .then(promptProject)
-    .then(portfolioData => {
-        console.log(portfolioData);  
+.then(promptProject)
+.then(portfolioData => { 
+    const pageHtml = generatePage(portfolioData)
+    
+    fs.writeFile('./index.html' , pageHtml, err => {
+        if(err) throw (err);
+    
+        console.log('Portfolio complete! Check out index.html to see the output!')
     })
+})
+
+// const pageHtml = generatePage(mockData)
